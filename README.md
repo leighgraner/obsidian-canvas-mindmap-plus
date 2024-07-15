@@ -4,7 +4,7 @@
 - New Child context menu item
 - New Sibling context menu item
 
-## What I'd Like to Add
+## What I'd Like to Add (before submitting any pull requests)
 - Context menu: Select All Child Nodes
 - Context menu: Fold Node
 - Context menu: Unfold Node
