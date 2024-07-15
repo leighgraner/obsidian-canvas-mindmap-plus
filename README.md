@@ -14,6 +14,8 @@
 
 - Review all my changes overall with my new knowledge and experience.
 
+----------
+
 # Obsidian Canvas MindMap
 
 - Press `Enter` to create brother card;
