@@ -1,8 +1,55 @@
-import { Canvas, CanvasEdge, CanvasNode, ItemView, Plugin, requireApiVersion, SettingTab, TFile } from 'obsidian';
+import { Canvas, CanvasEdge, CanvasNode, Workspace, Point, EventRef, ItemView, Menu, Plugin, requireApiVersion, SettingTab, TFile } from 'obsidian';
 import { around } from "monkey-around";
 import { addEdge, addNode, buildTrees, createChildFileNode, random } from "./utils";
 import { DEFAULT_SETTINGS, MindMapSettings, MindMapSettingTab } from "./mindMapSettings";
-import { CanvasEdgeData } from "obsidian/canvas";
+import { AllCanvasNodeData,	CanvasEdgeData, CanvasData, NodeSide, } from "obsidian/canvas";
+
+type Size = { width: number; height: number };
+
+//todo: note: borrowing this from enchanted-canvas/src/app/plugin.ts
+type WorkspaceWithCanvas = {
+	on(
+		name: "canvas:creation-menu",
+		callback: (menu: Menu, canvas: Canvas, pos: Point, size?: Size) => any,
+		ctx?: any
+	): EventRef;
+	on(
+		name: "canvas:node:initialize",
+		callback: (node: CanvasNode) => any,
+		ctx?: any
+	): EventRef;
+	on(
+		name: "canvas:node-menu",
+		callback: (menu: Menu, node: CanvasNode) => any,
+		ctx?: any
+	): EventRef;
+	on(
+		name: "canvas:node-connection-drop-menu",
+		callback: (menu: Menu, from: CanvasNode, edge: CanvasEdge) => any,
+		ctx?: any
+	): EventRef;
+	on(
+		name: "canvas:edge-menu",
+		callback: (menu: Menu, edge: CanvasEdge) => any,
+		ctx?: any
+	): EventRef;
+	on(
+		name: "canvas:selection-menu",
+		callback: (menu: Menu, canvas: Canvas) => any,
+		ctx?: any
+	): EventRef;
+	on(name: "canvas:menu:render", callback: () => any, ctx?: any): EventRef;
+	on(
+		name: "canvas:node-interaction-layer:render",
+		callback: () => any,
+		ctx?: any
+	): EventRef;
+	on(
+		name: "canvas:node-interaction-layer:set-target",
+		callback: (node: CanvasNode) => any,
+		ctx?: any
+	): EventRef;
+} & Workspace;
 
 const createEdge = async (node1: any, node2: any, canvas: any) => {
 
@@ -199,6 +246,7 @@ export default class CanvasMindMap extends Plugin {
 		this.patchCanvas();
 		this.patchMarkdownFileInfo();
 		this.patchCanvasNode();
+		this.registerEvents();
 	}
 
 	onunload() {
@@ -209,6 +257,24 @@ export default class CanvasMindMap extends Plugin {
 		this.settingTab = new MindMapSettingTab(this.app, this);
 		this.addSettingTab(this.settingTab);
 		await this.loadSettings();
+	}
+
+	registerEvents() {
+
+		const workspace = this.app.workspace as unknown as WorkspaceWithCanvas;
+		console.log("registering events");
+
+		this.registerEvent(workspace.on('canvas:node-menu', (menu:Menu, object) => {
+			// if (object.type === 'card') {
+			  menu.addItem((item) => {
+				item.setTitle('******My Custom Action')
+					.setIcon('star')  // Optional: Set an icon
+					.onClick(() => {
+					  this.handleCardAction(object);
+					});
+			  });
+			// }
+		}));
 	}
 
 	registerCommands() {
@@ -363,6 +429,12 @@ export default class CanvasMindMap extends Plugin {
 			}
 		});
 	}
+
+	handleCardAction(card) {
+		// Handle your custom action here
+		console.log('Custom action triggered for object:', card);
+	  }
+	
 
 	patchCanvas() {
 
