@@ -2,7 +2,7 @@ import { Canvas, CanvasEdge, CanvasNode, Workspace, Point, EventRef, ItemView, M
 import { around } from "monkey-around";
 import { addEdge, addNode, buildTrees, createChildFileNode, random } from "./utils";
 import { DEFAULT_SETTINGS, MindMapSettings, MindMapSettingTab } from "./mindMapSettings";
-import { AllCanvasNodeData,	CanvasEdgeData, CanvasData, NodeSide, } from "obsidian/canvas";
+import { AllCanvasNodeData, CanvasEdgeData, CanvasData, NodeSide, } from "obsidian/canvas";
 
 type Size = { width: number; height: number };
 
@@ -74,7 +74,7 @@ const navigate = (canvas: Canvas, direction: string) => {
 
 	const selectedItem = currentSelection.values().next().value as CanvasNode;
 	const viewportNodes = canvas.getViewportNodes();
-	const {x, y, width, height} = selectedItem;
+	const { x, y, width, height } = selectedItem;
 
 	canvas.deselectAll();
 
@@ -115,13 +115,13 @@ const createFloatingNode = (canvas: any, direction: string) => {
 
 	const tempChildNode = addNode(
 		canvas, random(16), {
-			x: x,
-			y: y,
-			width: node.width,
-			height: node.height,
-			type: 'text',
-			content: "",
-		}
+		x: x,
+		y: y,
+		width: node.width,
+		height: node.height,
+		type: 'text',
+		content: "",
+	}
 	);
 
 	canvas?.requestSave();
@@ -142,13 +142,13 @@ const createFloatingNode = (canvas: any, direction: string) => {
 const childNode = async (canvas: Canvas, parentNode: CanvasNode, y: number) => {
 	let tempChildNode = addNode(
 		canvas, random(16), {
-			x: parentNode.x + parentNode.width + 200,
-			y: y,
-			width: parentNode.width,
-			height: parentNode.height,
-			type: 'text',
-			content: "",
-		}
+		x: parentNode.x + parentNode.width + 200,
+		y: y,
+		width: parentNode.width,
+		height: parentNode.height,
+		type: 'text',
+		content: "",
+	}
 	);
 	await createEdge(parentNode, tempChildNode, canvas);
 
@@ -226,7 +226,7 @@ const createSiblingNode = async (canvas: Canvas, ignored: boolean) => {
 	if (nodes.length > 1 && nodes[0].x === nodes[1]?.x) {
 		nodes.forEach((node: CanvasNode, index: number) => {
 			const yPos = index === 0 ? parentNode.y + parentNode.height / 2 - totalHeight / 2 : nodes[index - 1].y + nodes[index - 1].height + 20;
-			node.moveTo({x: selectedNode.x, y: yPos});
+			node.moveTo({ x: selectedNode.x, y: yPos });
 		});
 	}
 
@@ -264,16 +264,88 @@ export default class CanvasMindMap extends Plugin {
 		const workspace = this.app.workspace as unknown as WorkspaceWithCanvas;
 		console.log("registering events");
 
-		this.registerEvent(workspace.on('canvas:node-menu', (menu:Menu, object) => {
-			// if (object.type === 'card') {
-			  menu.addItem((item) => {
-				item.setTitle('******My Custom Action')
+		this.registerEvent(workspace.on('canvas:node-menu', (menu: Menu, object) => {
+			menu.addSeparator();
+
+			menu.addItem((item) => {
+				item.setTitle('New Child')
 					.setIcon('star')  // Optional: Set an icon
 					.onClick(() => {
-					  this.handleCardAction(object);
+						const canvasView = this.app.workspace.getActiveViewOfType(ItemView);
+						const canvas = canvasView?.canvas;
+
+						createChildNode(canvas, true).then((node) => {
+							if (!node) return;
+
+							setTimeout(() => {
+								const realNode = canvas.nodes?.get(node.id);
+								canvas.zoomToSelection();
+
+								realNode?.startEditing();
+							}, 0);
+						});
 					});
-			  });
-			// }
+			});
+
+			menu.addItem((item) => {
+				item.setTitle('New Sibling')
+					.setIcon('star')  // Optional: Set an icon
+					.onClick(() => {
+						const canvasView = this.app.workspace.getActiveViewOfType(ItemView);
+						const canvas = canvasView?.canvas;
+
+						createSiblingNode(canvas, true).then((node) => {
+							if (!node) return;
+
+							setTimeout(() => {
+								// @ts-ignore
+								const realNode = canvas.nodes?.get(node.id);
+								canvas.zoomToSelection();
+
+								realNode?.startEditing();
+							}, 0);
+						});
+					});
+			});
+
+			menu.addSeparator();
+
+			menu.addItem((item) => {
+				item.setTitle('Select All Child Nodes [stub]')
+					.setIcon('star')  // Optional: Set an icon
+					.onClick(() => {
+					});
+			});
+
+			menu.addItem((item) => {
+				item.setTitle('Fold Node [stub]')
+					.setIcon('star')  // Optional: Set an icon
+					.onClick(() => {
+					});
+			});
+
+			menu.addItem((item) => {
+				item.setTitle('Unfold Node [stub]')
+					.setIcon('star')  // Optional: Set an icon
+					.onClick(() => {
+					});
+			});
+
+			menu.addItem((item) => {
+				item.setTitle('Unfold One Level [stub]')
+					.setIcon('star')  // Optional: Set an icon
+					.onClick(() => {
+					});
+			});
+
+			menu.addItem((item) => {
+				item.setTitle('Unfold All [stub]')
+					.setIcon('star')  // Optional: Set an icon
+					.onClick(() => {
+					});
+			});
+
+
 		}));
 	}
 
@@ -430,11 +502,7 @@ export default class CanvasMindMap extends Plugin {
 		});
 	}
 
-	handleCardAction(card) {
-		// Handle your custom action here
-		console.log('Custom action triggered for object:', card);
-	  }
-	
+
 
 	patchCanvas() {
 
