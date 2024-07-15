@@ -1,3 +1,19 @@
+# Changes by LeighGraner
+
+## What I've Added
+- New Child context menu item
+- New Sibling context menu item
+
+## What I'd Like to Add
+- Context menu: Select All Child Nodes
+- Context menu: Fold Node
+- Context menu: Unfold Node
+- Context menu: Unfold One Level
+- Context menu: Unfold All
+- TBD more
+
+- Review all my changes overall with my new knowledge and experience.
+
 # Obsidian Canvas MindMap
 
 - Press `Enter` to create brother card;
