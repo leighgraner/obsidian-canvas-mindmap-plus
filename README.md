@@ -13,6 +13,7 @@
 - TBD more
 
 - Review all my changes overall with my new knowledge and experience.
+- Integrate this section into the rest of README.md.
 
 ----------
 
