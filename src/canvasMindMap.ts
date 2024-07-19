@@ -558,7 +558,9 @@ export default class CanvasMindMap extends Plugin {
 								const realNode = this.canvas.nodes?.get(node.id);
 								realNode?.startEditing();
 								this.canvas.zoomToSelection();
-							}, 0);
+							}, 20); // todo: Rather than wait 20 milliseconds, do a
+							// more savvy check for realNode.child to be defined by other thread
+							// before calling realNode?.startEditing(). -LG
 						});
 
 						this.scope.register([], "Tab", async (ev: KeyboardEvent) => {
@@ -570,7 +572,7 @@ export default class CanvasMindMap extends Plugin {
 								const realNode = this.canvas.nodes?.get(node.id);
 								realNode?.startEditing();
 								this.canvas.zoomToSelection();
-							}, 0);
+							}, 20);
 						});
 
 						this.scope.register([], 'Space', async (ev: KeyboardEvent) => {
