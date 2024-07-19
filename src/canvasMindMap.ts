@@ -142,7 +142,7 @@ const createFloatingNode = (canvas: any, direction: string) => {
 const childNode = async (canvas: Canvas, parentNode: CanvasNode, y: number) => {
 	let tempChildNode = addNode(
 		canvas, random(16), {
-		x: parentNode.x + parentNode.width + 200,
+		x: parentNode.x + parentNode.width + 120,
 		y: y,
 		width: parentNode.width,
 		height: parentNode.height,
