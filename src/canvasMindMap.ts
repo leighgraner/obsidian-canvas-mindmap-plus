@@ -561,8 +561,8 @@ export default class CanvasMindMap extends Plugin {
 							}, 20); // todo: Rather than wait 20 milliseconds, do a
 							// more savvy check for realNode.child to be defined by other thread
 							// before calling realNode?.startEditing(). -LG
-						});
-
+						});	
+					
 						this.scope.register(["Alt"], "Tab", async (ev: KeyboardEvent) => {
 
 							const node = await createChildNode(this.canvas, true);
@@ -575,8 +575,6 @@ export default class CanvasMindMap extends Plugin {
 							}, 20);
 						});
 
-						
-
 						this.scope.register([], "Enter", async (ev: KeyboardEvent) => {
 							const selection = this.canvas.selection;
 							if (selection.size !== 1) return;
@@ -586,9 +584,8 @@ export default class CanvasMindMap extends Plugin {
 
 							if (node.isEditing) return;
 							node.startEditing();
-
 						});
-
+					
 						return next.call(this);
 					}
 			});
