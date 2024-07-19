@@ -550,40 +550,91 @@ export default class CanvasMindMap extends Plugin {
 							});
 						}
 
-						this.scope.register(["Alt"], "Enter", async () => {
-							const node = await createSiblingNode(this.canvas, true);
-							if (!node) return;
+						if (self.settings.navigate.useNavigate) {
+							this.scope.register([], "ArrowUp", () => {
+								navigate(this.canvas, "top");
+							});
+							this.scope.register([], "ArrowDown", () => {
+								navigate(this.canvas, "bottom");
+							});
+							this.scope.register([], "ArrowLeft", () => {
+								navigate(this.canvas, "left");
+							});
+							this.scope.register([], "ArrowRight", () => {
+								navigate(this.canvas, "right");
+							});
+						}
 
-							setTimeout(() => {
-								const realNode = this.canvas.nodes?.get(node.id);
-								realNode?.startEditing();
-								this.canvas.zoomToSelection();
-							}, 20); // todo: Rather than wait 20 milliseconds, do a
-							// more savvy check for realNode.child to be defined by other thread
-							// before calling realNode?.startEditing(). -LG
+						this.scope.register(["Alt"], "Enter", async () => {
+							//todo: insert newline here. -LG
+						});	
+
+						this.scope.register([], "Enter", async () => {
+							if (this.canvas.selection.size !== 1) return;
+							const ENTER_STOPS_EDITING = true;
+							
+							const selectedNode = this.canvas.selection.entries().next().value[1];
+							if (selectedNode.isEditing) {
+								if (ENTER_STOPS_EDITING) {
+									selectedNode.blur();
+									selectedNode.focus();
+								}
+							} else {
+								const node = await createSiblingNode(this.canvas, false);
+								if (!node) return;
+	
+								setTimeout(() => {
+									const realNode = this.canvas.nodes?.get(node.id);
+									realNode?.startEditing();
+									this.canvas.zoomToSelection();
+								}, 50); // todo: Rather than wait 20 milliseconds, do a
+								// more savvy check for realNode.child to be defined by other thread
+								// before calling realNode?.startEditing(). -LG
+							}
 						});	
 					
 						this.scope.register(["Alt"], "Tab", async (ev: KeyboardEvent) => {
-
-							const node = await createChildNode(this.canvas, true);
-							if (!node) return;
-
-							setTimeout(() => {
-								const realNode = this.canvas.nodes?.get(node.id);
-								realNode?.startEditing();
-								this.canvas.zoomToSelection();
-							}, 20);
+							//todo: insert tab char here. -LG
 						});
 
-						this.scope.register([], "Enter", async (ev: KeyboardEvent) => {
+						this.scope.register([], "Tab", async (ev: KeyboardEvent) => {
+							const TAB_STOPS_EDITING = true;
+							const selection = this.canvas.selection;
+							if (selection.size !== 1) return;
+							const existingNode = selection.entries().next().value[1];
+							if (existingNode?.label || existingNode?.url) return;
+
+							if (existingNode.isEditing) {
+								if (TAB_STOPS_EDITING) {
+									existingNode.blur();
+									existingNode.focus();
+								}
+							} else {
+								const node = await createChildNode(this.canvas, false);
+								if (!node) return;
+
+								setTimeout(() => {
+									const realNode = this.canvas.nodes?.get(node.id);
+									realNode?.startEditing();
+									this.canvas.zoomToSelection();
+								}, 50);
+							}
+						});
+
+
+						this.scope.register(["Mod"], "Enter", async (ev: KeyboardEvent) => {
 							const selection = this.canvas.selection;
 							if (selection.size !== 1) return;
 							const node = selection.entries().next().value[1];
 
 							if (node?.label || node?.url) return;
 
-							if (node.isEditing) return;
-							node.startEditing();
+							if (!node.isEditing) { 
+								node.startEditing();
+							} else {
+								node.blur();
+								node.focus();
+							}
 						});
 					
 						return next.call(this);
