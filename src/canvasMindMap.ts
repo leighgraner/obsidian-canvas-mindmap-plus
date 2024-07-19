@@ -550,20 +550,20 @@ export default class CanvasMindMap extends Plugin {
 							});
 						}
 
-						if (self.settings.navigate.useNavigate) {
-							this.scope.register([], "ArrowUp", () => {
-								navigate(this.canvas, "top");
-							});
-							this.scope.register([], "ArrowDown", () => {
-								navigate(this.canvas, "bottom");
-							});
-							this.scope.register([], "ArrowLeft", () => {
-								navigate(this.canvas, "left");
-							});
-							this.scope.register([], "ArrowRight", () => {
-								navigate(this.canvas, "right");
-							});
-						}
+						// if (self.settings.navigate.useNavigate) {
+						// 	this.scope.register([], "ArrowUp", () => {
+						// 		navigate(this.canvas, "top");
+						// 	});
+						// 	this.scope.register([], "ArrowDown", () => {
+						// 		navigate(this.canvas, "bottom");
+						// 	});
+						// 	this.scope.register([], "ArrowLeft", () => {
+						// 		navigate(this.canvas, "left");
+						// 	});
+						// 	this.scope.register([], "ArrowRight", () => {
+						// 		navigate(this.canvas, "right");
+						// 	});
+						// }
 
 						this.scope.register(["Alt"], "Enter", async () => {
 							//todo: insert newline here. -LG
