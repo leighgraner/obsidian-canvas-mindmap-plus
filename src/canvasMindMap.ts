@@ -161,7 +161,7 @@ const childNode = async (canvas: Canvas, parentNode: CanvasNode, y: number) => {
 
 	return tempChildNode;
 };
-
+   
 const createChildNode = async (canvas: Canvas, ignored: boolean) => {
 	if (canvas.selection.size !== 1) return;
 	const parentNode = canvas.selection.entries().next().value[1];
@@ -280,7 +280,6 @@ export default class CanvasMindMap extends Plugin {
 							setTimeout(() => {
 								const realNode = canvas.nodes?.get(node.id);
 								canvas.zoomToSelection();
-
 								realNode?.startEditing();
 							}, 0);
 						});
