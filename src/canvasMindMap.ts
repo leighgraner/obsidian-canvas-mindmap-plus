@@ -550,8 +550,8 @@ export default class CanvasMindMap extends Plugin {
 							});
 						}
 
-						this.scope.register([], "Enter", async () => {
-							const node = await createSiblingNode(this.canvas, false);
+						this.scope.register(["Alt"], "Enter", async () => {
+							const node = await createSiblingNode(this.canvas, true);
 							if (!node) return;
 
 							setTimeout(() => {
@@ -563,9 +563,9 @@ export default class CanvasMindMap extends Plugin {
 							// before calling realNode?.startEditing(). -LG
 						});
 
-						this.scope.register([], "Tab", async (ev: KeyboardEvent) => {
+						this.scope.register(["Alt"], "Tab", async (ev: KeyboardEvent) => {
 
-							const node = await createChildNode(this.canvas, false);
+							const node = await createChildNode(this.canvas, true);
 							if (!node) return;
 
 							setTimeout(() => {
@@ -575,7 +575,9 @@ export default class CanvasMindMap extends Plugin {
 							}, 20);
 						});
 
-						this.scope.register([], 'Space', async (ev: KeyboardEvent) => {
+						
+
+						this.scope.register([], "Enter", async (ev: KeyboardEvent) => {
 							const selection = this.canvas.selection;
 							if (selection.size !== 1) return;
 							const node = selection.entries().next().value[1];
